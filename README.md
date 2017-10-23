@@ -2,6 +2,8 @@
 
 ## API Reference
 
+https://github.com/cloudant-labs/cloudant-nano
+
 https://www.npmjs.com/package/cloudant#api-reference
 
 ## Licensing
