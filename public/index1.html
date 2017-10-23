@@ -8,7 +8,7 @@ $(function(){
     $.ajax({
       type: 'POST',
       url: '/mypost',
-      data: { country: $('#country').val(), capital: $('#capital').val() },
+      data: { country: $('#country').val(), capital: $('#capital').val(), temp: $('#temp').val() },
       success: function( data ){
         console.log( data );
         setTimeout( 'list()', 1000 );
@@ -47,18 +47,20 @@ function list(){
 }
 
 function delDoc( id ){
-  $.ajax({
-    type: 'DELETE',
-    url: '/mydelete/' + id,
-    success: function( data ){
-      data = JSON.parse( data );
-      console.log( data );
-      setTimeout( 'list()', 1000 );
-    },
-    error: function(){
-      console.log( 'error' );
-    }
-  });
+  if( window.confirm( 'Sure?' ) ){
+    $.ajax({
+      type: 'DELETE',
+      url: '/mydelete/' + id,
+      success: function( data ){
+        data = JSON.parse( data );
+        console.log( data );
+        setTimeout( 'list()', 1000 );
+      },
+      error: function(){
+        console.log( 'error' );
+      }
+    });
+  }
 }
 </script>
 </head>
