@@ -1,7 +1,84 @@
 <html>
-<form method='POST' action='/mypost'>
-  Country: <input type='text' name='country' value=''/><br/>
-  Capital: <input type='text' name="capital" value=''/><br/>
+<head>
+<title>Cloudant</title>
+<script src='//code.jquery.com/jquery-2.2.4.min.js'></script>
+<script>
+$(function(){
+  $('#myform').submit( function(){
+    $.ajax({
+      type: 'POST',
+      url: '/mypost',
+      data: { country: $('#country').val(), capital: $('#capital').val(), temp: $('#temp').val() },
+      success: function( data ){
+        console.log( data );
+        setTimeout( 'list()', 1000 );
+      },
+      error: function(){
+        console.log( 'error' );
+      }
+    });
+
+    return false;
+  });
+
+  list();
+});
+
+function list(){
+  $('#list').html( '' );
+  $.ajax({
+    type: 'GET',
+    url: '/mydata',
+    success: function( data ){
+      data = JSON.parse( data );
+      console.log( data );
+      if( data.docs && data.docs.length > 0 ){
+        for( var i = 0; i < data.docs.length; i ++ ){
+          var doc = data.docs[i];
+          var tr = '<tr><td>' + doc.country + '</td><td>' + doc.capital + '</td><td>' + doc.temp + '<td><input type="button" value="del" onClick="delDoc( \'' + doc._id + '\' )"/></td></tr>';
+          $('#list').append( tr );
+        }
+      }
+    },
+    error: function(){
+      console.log( 'error' );
+    }
+  });
+}
+
+function delDoc( id ){
+  if( window.confirm( 'Sure?' ) ){
+    $.ajax({
+      type: 'DELETE',
+      url: '/mydelete/' + id,
+      success: function( data ){
+        data = JSON.parse( data );
+        console.log( data );
+        setTimeout( 'list()', 1000 );
+      },
+      error: function(){
+        console.log( 'error' );
+      }
+    });
+  }
+}
+</script>
+</head>
+<body>
+  <table border='1'>
+  <thead>
+  <tr><th>Country</th><th>Capital</th><th>Temp</th><th>Action</th><tr>
+  </thead>
+  <tbody id='list'>
+  </tbody>
+</table>
+<hr/>
+
+<form method='POST' id='myform'>
+  Country: <input type='text' id='country' name='country' value=''/><br/>
+  Capital: <input type='text' id='capital' name="capital" value=''/><br/>
+  Avg.Temp.: <input type='text' id='temp' name="temp" value=''/><br/>
   <input type='submit' value='click'/>
 </form>
+</body>
 </html>
